@@ -28,10 +28,12 @@ tickers = df[0].tolist()
 view_tickers = df[1].tolist()
 
 st.warning("""
-⚠️ **Disclaimer:** This application is provided "as-is" for educational and informational purposes.  
-While every effort has been made to ensure accuracy, occasional bugs or unexpected behavior may occur.  
-If you encounter any issues, please try refreshing or reloading the page.  
-Thank you for your understanding!
+⚠️ **Disclaimer:** This application is provided as-is for educational and informational purposes only.
+The portfolio results are generated using historical data and are optimized to maximize the Sharpe ratio mathematically, without real-world diversification or regulatory constraints.
+This is not financial advice.
+While efforts have been made to ensure accuracy, occasional bugs or unexpected behavior may occur.
+Please refresh or reload the page if needed.
+Thank you for using the app!
 """)
 
 st.info("⚠️ Loading results for more than 10 companies AND 20000 portfolios may slow down the program.")
