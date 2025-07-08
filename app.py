@@ -104,7 +104,7 @@ if st.button("Confirm Portfolio:"):
         
         # Finding real optimal proportions
         constraints = ({'type': 'eq', 'fun': lambda x: np.sum(x) - 1})  # Weights sum to 1
-        bounds = tuple((0, 1) for _ in range(len(growthdf.drop(columns=['Date']).mean()))) # 0.2 instead of 1 to prevent corner solutions. 
+        bounds = tuple((0, 1) for _ in range(len(growthdf.drop(columns=['Date']).mean()))) 
         guess = np.ones(len(growthdf.drop(columns=['Date']).mean())) / len(growthdf.drop(columns=['Date']).mean())
         result = minimize(lambda w: - (np.dot(w, growthdf.drop(columns=['Date']).mean()) - risk_free_rate) / np.sqrt(np.dot(w.T, np.dot(cov_matrix, w))),
             guess,
