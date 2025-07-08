@@ -20,7 +20,7 @@ st.markdown("<h1 style='color:#FFD700; margin-top: -40px;'>Portfolio Optimisatio
 def download_data(tickers): # Downloading data function
     if len(tickers) == 0:
         return pd.DataFrame()  # Return empty if no tickers chosen
-    return yf.download(tickers, start='2023-01-01', end='2025-07-05')
+    return yf.download(tickers, start='2018-01-01', end='2025-07-05')
 
 # Load tickers from Excel
 df = pd.read_excel("Companies.xlsx", header=None)
