@@ -12,7 +12,7 @@ if 'portfolio_confirmed' not in st.session_state:
 
 
 # Main header
-st.markdown("<h1 style='color:#FFD700; margin-top: -40px;'>Portfolio Optimisation Project by Sanit</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='color:#FFD700; margin-top: -40px;'>Portfolio Optimisation Project by San</h1>", unsafe_allow_html=True)
 
 
 # Cache the data download to speed up repeated calls with same tickers
