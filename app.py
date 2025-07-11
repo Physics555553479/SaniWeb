@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import sys
 from datetime import date
 
+st.cache_data.clear()
 
 if 'portfolio_confirmed' not in st.session_state:
     st.session_state.portfolio_confirmed = False # Safety feature to ensure that if steady state does not exist, it's set to false
