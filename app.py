@@ -5,7 +5,9 @@ import pandas as pd
 from scipy.optimize import minimize
 import matplotlib.pyplot as plt
 import sys
+from datetime import date
 
+st.cache_data.clear()
 
 if 'portfolio_confirmed' not in st.session_state:
     st.session_state.portfolio_confirmed = False # Safety feature to ensure that if steady state does not exist, it's set to false
@@ -20,7 +22,7 @@ st.markdown("<h1 style='color:#FFD700; margin-top: -40px;'>Portfolio Optimisatio
 def download_data(tickers): # Downloading data function
     if len(tickers) == 0:
         return pd.DataFrame()  # Return empty if no tickers chosen
-    return yf.download(tickers, start='2023-01-01', end='2025-07-05')
+    return yf.download(tickers, start='2018-01-01', end=date.today().strftime('%Y-%m-%d'))
 
 # Load tickers from Excel
 df = pd.read_excel("Companies.xlsx", header=None)
@@ -28,10 +30,12 @@ tickers = df[0].tolist()
 view_tickers = df[1].tolist()
 
 st.warning("""
-⚠️ **Disclaimer:** This application is provided "as-is" for educational and informational purposes.  
-While every effort has been made to ensure accuracy, occasional bugs or unexpected behavior may occur.  
-If you encounter any issues, please try refreshing or reloading the page.  
-Thank you for your understanding!
+⚠️ **Disclaimer:** This application is provided as-is for educational and informational purposes only.
+The portfolio results are generated using historical data and are optimized to maximize the Sharpe ratio mathematically, without real-world diversification or regulatory constraints.
+This is not financial advice.
+While efforts have been made to ensure accuracy, occasional bugs or unexpected behavior may occur.
+Please refresh or reload the page if needed.
+Thank you for using the app!
 """)
 
 st.info("⚠️ Loading results for more than 10 companies AND 20000 portfolios may slow down the program.")
@@ -79,7 +83,7 @@ if st.button("Confirm Portfolio:"):
         one_dimensional_matrix = weights @ cov_matrix
         port_var = np.einsum('ij,ij->i', one_dimensional_matrix, weights)
         port_vol = np.sqrt(port_var)    
-        base_rate = float(df.iloc[1, 2]) # Risk free rate (govt.bonds)
+        base_rate = yf.Ticker("^TNX").history(period="1d")["Close"].iloc[-1] # Risk free rate (govt.bonds)
         risk_free_rate = (1 + base_rate/100)**(1/252) - 1
         sharpe_ratio = (expected_return - risk_free_rate)/port_vol # Sharpe Ratio
 
@@ -102,7 +106,7 @@ if st.button("Confirm Portfolio:"):
         
         # Finding real optimal proportions
         constraints = ({'type': 'eq', 'fun': lambda x: np.sum(x) - 1})  # Weights sum to 1
-        bounds = tuple((0, 1) for _ in range(len(growthdf.drop(columns=['Date']).mean())))
+        bounds = tuple((0, 1) for _ in range(len(growthdf.drop(columns=['Date']).mean()))) 
         guess = np.ones(len(growthdf.drop(columns=['Date']).mean())) / len(growthdf.drop(columns=['Date']).mean())
         result = minimize(lambda w: - (np.dot(w, growthdf.drop(columns=['Date']).mean()) - risk_free_rate) / np.sqrt(np.dot(w.T, np.dot(cov_matrix, w))),
             guess,
