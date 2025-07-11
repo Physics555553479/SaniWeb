@@ -5,6 +5,7 @@ import pandas as pd
 from scipy.optimize import minimize
 import matplotlib.pyplot as plt
 import sys
+from datetime import date
 
 
 if 'portfolio_confirmed' not in st.session_state:
@@ -20,7 +21,7 @@ st.markdown("<h1 style='color:#FFD700; margin-top: -40px;'>Portfolio Optimisatio
 def download_data(tickers): # Downloading data function
     if len(tickers) == 0:
         return pd.DataFrame()  # Return empty if no tickers chosen
-    return yf.download(tickers, start='2018-01-01', end='2025-07-05')
+    return yf.download(tickers, start='2018-01-01', end=date.today().strftime('%Y-%m-%d'))
 
 # Load tickers from Excel
 df = pd.read_excel("Companies.xlsx", header=None)
@@ -81,7 +82,7 @@ if st.button("Confirm Portfolio:"):
         one_dimensional_matrix = weights @ cov_matrix
         port_var = np.einsum('ij,ij->i', one_dimensional_matrix, weights)
         port_vol = np.sqrt(port_var)    
-        base_rate = float(df.iloc[1, 2]) # Risk free rate (govt.bonds)
+        base_rate = yf.Ticker("^TNX").history(period="1d")["Close"].iloc[-1] # Risk free rate (govt.bonds)
         risk_free_rate = (1 + base_rate/100)**(1/252) - 1
         sharpe_ratio = (expected_return - risk_free_rate)/port_vol # Sharpe Ratio
 
